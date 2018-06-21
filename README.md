@@ -1,7 +1,7 @@
 # SharpSnmpLibWrapper
 SharpSnmpLib Wrapper for PowerShell
 
-This module was written because any other implementation of [#SNMP] (https://github.com/lextm/sharpsnmplib) in PoSh just sucks.
+This module was written because any other implementation of [#SNMP](https://github.com/lextm/sharpsnmplib) in PoSh just sucks.
 
 Use Get-SharpSnmpData and Invoke-SharpSnmpWalk for simple requests (arguments are self-explanatory).
 

@@ -15,3 +15,5 @@ Before using this module in actual script, you need to load #SNMP .dll:
 ```
 [system.reflection.assembly]::LoadFile('C:\Shares\Progs\sharpsnmp\v10.0.7\net452\SharpSnmpLib.dll')
 ```
+
+If you need to workaround the ["truncation error for 32-bit integer coding" bug](https://github.com/lextm/sharpsnmplib/issues/30), use `[Lextm.SharpSnmpLib.Messaging.Messenger]::UseFullRange = $false` before accesing agent.

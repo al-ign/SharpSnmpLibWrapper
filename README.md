@@ -5,11 +5,19 @@ This module was written because any other implementation of [#SNMP](https://gith
 
 Use `Get-SharpSnmpData` and `Invoke-SharpSnmpWalk` for simple requests (arguments are self-explanatory).
 
-If you want to get a MIB table (SEQUENCE OF something) use `Get-SharpSnmpTable`. This function does not accept plain IP, Community etc arguments, but uses a hash object for agent properties, made by New-SharpSnmpAgent.
-Simple table request will look like 
+If you want to get a MIB table (SEQUENCE OF something) use `Get-SharpSnmpTable`. This function does not accept plain IP, Community etc arguments, but uses a hash object for agent properties, made by helper function `New-SharpSnmpAgent`.
+Simple table request will look like this:
 ```
 Get-SharpSnmpTable -OID '.1.3.6.1.2.1.2.2' -Agent (New-SharpSnmpAgent -Agent '127.0.0.1')
 ```
+If you are storing your agent configuration in CSV file, you can load it like this:
+```
+#load agent info
+$Agents = @(Import-Csv -Path 'C:\Shares\Scripts\Devices\SNMP.csv') | % {
+        New-SharpSnmpAgent -Agent $_.IP -Port $_.Port -Community $_.Community -Version $_.Version
+        }
+```
+And just pass the whole array to Get-SharpSnmpTable: `Get-SharpSnmpTable -OID '.1.3.6.1.2.1.2.2' -Agent $Agents`
 
 Before using this module in actual script, you need to load #SNMP .dll:
 ```

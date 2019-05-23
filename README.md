@@ -12,8 +12,8 @@ Get* functions support direct specification of the SNMP agent address, community
 AgentObject can be just a hashtable with all parameters:
 ```
 @{ 
-    Agent = '192.168.128.28'
-    Community = 'Auto100133'
+    Agent = '192.0.2.28'
+    Community = 'SecureCommunity'
     Port = 161
     Version = 'V2'
     } | Get-SharpSnmp -OID .1.3.6.1.2.1.1.1.0
@@ -21,22 +21,22 @@ AgentObject can be just a hashtable with all parameters:
 Or a just necessary fields if you still on a `public` community and 161 port, but should be passed through the help function `New-SharpSnmpAgent`
 ```
 @{ 
-    Agent = '192.168.128.28'
-    Community = 'Auto100133'
+    Agent = '192.0.2.28'
+    Community = 'SecureCommunity'
     } | New-SharpSnmpAgent |  Get-SharpSnmp -OID .1.3.6.1.2.1.1.1.0
 ```
 Or batch create the multiple objects if all parameters are the same:
 ```
-$Devices = '192.168.128.28','192.168.128.20' | New-SharpSnmpAgent -Community 'SecureCommunity'
+$Devices = '192.0.2.28','192.0.2.20' | New-SharpSnmpAgent -Community 'SecureCommunity'
 $Devices | Get-SharpSnmp -OID .1.3.6.1.2.1.1.1.0
 ```
 
 If you are storing your agent configuration in CSV file, you can just pipe it to New-SharpSnmpAgent, example CSV:
 ```
 "Agent";"Community";"Description";"Version";"Port"
-"192.168.128.243";"Auto100133";"PowerConnect 5548";"V2";"161"
-"192.168.128.249";"Auto100133";"PowerConnect 8024F";"V2";"161"
-"192.168.128.28";"Auto100133";"Main Cisco Router";"V2";"161"
+"192.0.2.243";"SecureCommunity";"PowerConnect 5548";"V2";"161"
+"192.0.2.249";"SecureCommunity";"PowerConnect 8024F";"V2";"161"
+"192.0.2.28";"SecureCommunity";"Main Cisco Router";"V2";"161"
 ```
 Loading this CSV:
 ```

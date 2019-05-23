@@ -7,7 +7,7 @@ Use `Get-SharpSnmp` and `Get-SharpSnmpWalk` for simple requests (parameters are 
 
 If you want to get a MIB table (SEQUENCE OF something) use `Get-SharpSnmpTable`. 
 
-Get* functions support direct specification of the SNMP agent address, community, port and version (fine for callin one device), but also support `AgentObject` which is useful if you have more than one SNMP device to query against.
+Get* functions support direct specification of the SNMP agent address, community, port and version (fine for calling one device), but also support `AgentObject` which is useful if you have more than one SNMP device to query against.
 
 AgentObject can be just a hashtable with all parameters:
 ```

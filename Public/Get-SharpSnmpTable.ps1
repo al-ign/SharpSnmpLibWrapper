@@ -103,7 +103,13 @@ begin {
 process {
     foreach ($thisAgent in $AgentObject) {
         Write-Progress -Activity $("Get SNMP{0} from {1}" -f $thisAgent.Version, $thisAgent.Agent.ToString()) -Status $('Get table for OID {0}' -f $OID.ToString())
-        $thisAgent | Get-SharpSnmpWalk -OID $OID  | ConvertFrom-SharpSnmpWalk -OID $OID  | Convert-SharpSnmpData
+        $SNMP = Get-SharpSnmpWalk -OID $OID -AgentObject $thisAgent
+        if ($SNMP) {
+            ConvertFrom-SharpSnmpWalk -OID $OID -SNMP $SNMP | Convert-SharpSnmpData
+            }
+        else {
+            Write-Warning -Message ("Can't process SNMP response on {0} - no data!" -f $thisAgent.Agent)
+            }
         } # End %    
     }# End process block
 } # End function Get-SharpSnmpTable

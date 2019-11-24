@@ -98,40 +98,14 @@ process {
             #LLDP 
             #1.0.8802.1.1.2.1.4.1
             '^\.?1\.0\.8802\.1\.1\.2\.1\.4\.1' {
-                $Split = $Entry.Index -split '\.'
-                $Entry = $Entry | select `
-                    Source,
-                    @{N = 'lldpRemTimeMark';	E = {$Split[0]}}, 
-                    @{N = 'lldpRemLocalPortNum';	E = {[int]$Split[1]}}, 
-                    @{N = 'lldpRemIndex';	E = {$Split[2]}}, 
-                    @{N = 'lldpRemChassisIdSubtype';	E = {$_.4}}, 
-                    @{N = 'lldpRemChassisId';	E = {$_.5}}, 
-                    @{N = 'lldpRemPortIdSubtype';	E = {$_.6}}, 
-                    @{N = 'lldpRemPortId';	E = {$_.7}}, 
-                    @{N = 'lldpRemPortDesc';	E = {$_.8}}, 
-                    @{N = 'lldpRemSysName';	E = {$_.9}}, 
-                    @{N = 'lldpRemSysDesc';	E = {$_.10}}, 
-                    @{N = 'lldpRemSysCapSupported';	E = {$_.11}}, 
-                    @{N = 'lldpRemSysCapEnabled';	E = {$_.12}}  
-                    
-                switch ($Entry.lldpRemPortIdSubtype) {
-                    3 {
-                        $Entry.lldpRemPortId = $Entry.lldpRemPortId.ToPhysicalAddress() -replace "\:|\."
-                        }
-                    } # End switch
+                ConvertFrom-OID.1.0.8802.1.1.2.1.4.1 -SNMP $SNMP
+                }
 
-                switch ($Entry.lldpRemChassisIdSubtype) {
-                    4 {
-                        if (($Entry.lldpRemChassisId -match "\:|\.") -and ($Entry.lldpRemChassisId.Length -ne 6)) {
-                            $Entry.lldpRemChassisId = $Entry.lldpRemChassisId -replace "\:|\."
-                            }
-                        else {
-                            $Entry.lldpRemChassisId = $Entry.lldpRemChassisId.ToPhysicalAddress() -replace "\:|\."
-                            }
-                        }
-                    } # End switch
-                #output
-                $Entry
+            #START
+            #LLDP 
+            #1.0.8802.1.1.2.1.3.7
+            '^\.?1\.0\.8802\.1\.1\.2\.1\.3\.7' {
+                ConvertFrom-OID.1.0.8802.1.1.2.1.3.7 -SNMP $SNMP
                 }
 
             #START
@@ -184,8 +158,10 @@ process {
 
             #'.1.3.6.1.2.1.1'
             '^\.?1\.3\.6\.1\.2\.1\.1$' {
-                if ($MemberType -eq 'Lextm.SharpSnmpLib.Variable') {$Entry = $Entry | ConvertFrom-SharpSnmpWalk -OID $Matches[0]
+                if ($MemberType -eq 'Lextm.SharpSnmpLib.Variable') {
+                    $Entry = $Entry | ConvertFrom-SharpSnmpWalk -OID $Matches[0]
                     }
+
                 switch ($Entry.Index) {
                     1 {$Entry.Id = 'sysDescr'}
                     2 {$Entry.Id = 'sysObjectID'}
@@ -216,6 +192,23 @@ process {
                     $Entry
                     }
                 }
+
+            #START
+            #FJDARY-E150.MIB
+            #fjdaryDiskTable
+            #'.1.3.6.1.4.1.211.1.21.1.150.2.19.2'
+            '^\.?1\.3\.6\.1\.4\.1\.211\.1\.21\.1\.150\.2\.19\.2' {
+                ConvertFrom-OID.1.3.6.1.4.1.211.1.21.1.150.2.19.2 -SNMP $Entry
+                }
+
+            #START
+            #FJDARY-E150.MIB
+            #fjdarySspMachineId
+            #'.1.3.6.1.4.1.211.1.21.1.150.1.1.0'
+            '^\.?1\.3\.6\.1\.4\.1\.211\.1\.21\.1\.150\.1\.1\.0' {
+                ConvertFrom-OID.1.3.6.1.4.1.211.1.21.1.150.1.1.0 -SNMP $Entry
+                }
+
 
             default {
                 $Entry

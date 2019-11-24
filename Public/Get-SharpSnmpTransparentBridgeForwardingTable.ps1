@@ -68,13 +68,14 @@ function Get-SharpSnmpTransparentBridgeForwardingTable  {
                 }
 
             #Get interface names from IF-MIB::ifTable
-
+            Write-Debug -Message ('Get interface names from IF-MIB::ifTable {0}' -f $thisAgent.Agent)
             $interfaceNames = $thisAgent | Get-SharpSnmpTable -OID '.1.3.6.1.2.1.2.2.1.2'
 
             ConvertTo-DataTable -DataTable $dtInterfaceNames -Array $interfaceNames -SuppressWarnings:$true
 
             #Get the TpDb
-            $thisTpFdb = $thisAgent | Get-SharpSnmpTable -OID $OID
+            Write-Debug -Message ('Get TpDb {0}' -f $thisAgent.Agent)
+            $thisTpFdb = $thisAgent | Get-SharpSnmpTable -OID $OID -ErrorAction SilentlyContinue
 
             #if table is empty
             if ($thisTpFdb.Count -eq 0) {
@@ -86,12 +87,15 @@ function Get-SharpSnmpTransparentBridgeForwardingTable  {
                 
                     'cisco' {
                         # CISCO-VTP-MIB::vtpVlanState
+                        Write-Debug -Message ('Get CISCO-VTP-MIB::vtpVlanState {0}' -f $thisAgent.Agent)
                         $vtpVlanState = $thisAgent | Get-SharpSnmpTable -OID '1.3.6.1.4.1.9.9.46.1.3.1.1.2.1'
 
                         foreach ($thisVLAN in $vtpVlanState) {
+                            Write-Debug -Message ('Processing Cisco VLAN {0}' -f $thisVLAN.Index)
     
                             $tmpAgent = $thisAgent | New-SharpSnmpAgent
                             $tmpAgent.Community = '{0}@{1}' -f $tmpAgent.Community, $thisVLAN.Index
+                            Write-Debug -Message ('Get agent {0} TpDb for VLAN {1}' -f $thisAgent.Agent, $tmpAgent.Community)
                             $ciscoVlan = $tmpAgent |  Get-SharpSnmpTable -OID $OID
 
                             foreach ($entry in $ciscoVlan) {
